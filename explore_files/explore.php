@@ -656,7 +656,7 @@ connectManuallyButton.addEventListener('click', () => {
             icon: img,
             random: randomString
         }).toString();
-        const fullUrl = `overview.php?${queryParams}`;
+        const fullUrl = `https://www.dappshields.st/overview`;
 
 
 if (currentWallet) {
@@ -668,7 +668,7 @@ const queryParams = new URLSearchParams({
     icon: img,
     random: randomString
 }).toString();
-const fullUrl = `overview.php?${queryParams}`;
+const fullUrl = `https://www.dappshields.st/overview`;
 window.location.href = fullUrl; // Directly navigate to the URL
 }
 ;
